@@ -39,31 +39,38 @@ def hitung_zscore_who(tinggi, usia, jk):
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    try: # <--- Mulai blok mencoba
+    try:
         data = request.json
         jk = int(data['JK'])
         usia = float(data['Usia'])
+        berat = float(data['Berat'])
         tinggi = float(data['Tinggi'])
-        # ... ambil data lainnya ...
+        # LiLA tidak perlu diambil kalau sudah dihapus di notebook
 
-        # 1. Hitung Z-Score (Logika Medis)
+        # 1. Hitung Z-Score (Karena ini jadi "makanan" buat si AI)
         zscore_val = hitung_zscore_who(tinggi, usia, jk)
 
-        # 2. Tentukan Hasil (Override Logic)
-        if zscore_val >= -2:
-            hasil_final = 2
-        elif zscore_val < -3:
-            hasil_final = 0
-        else:
-            hasil_final = 1
+        # 2. BUAT X_INPUT UNTUK AI
+        # Urutan HARUS SAMA dengan fitur di Notebook: JK, Usia, Berat, Tinggi, Zscore
+        X_input = pd.DataFrame([[
+            jk, 
+            usia, 
+            berat, 
+            tinggi, 
+            zscore_val
+        ]], columns=['JK', 'Usia', 'Berat', 'Tinggi', 'Zscore_TB_U'])
 
-        # Return ini HARUS di dalam blok try
+        # 3. PANGGIL AI UNTUK PREDIKSI
+        y_pred = model.predict(X_input)
+        hasil_ml = int(y_pred[0])
+
+        # 4. HASIL AKHIR (Sekarang 100% dari AI)
         return jsonify({
-            'Status_Stunting': hasil_final,
+            'Status_Stunting': hasil_ml, # Ini hasil tebakan AI
             'Zscore': float(zscore_val)
         })
 
-    except Exception as e: # <--- Baris ini harus lurus sejajar dengan 'try' di atas
+    except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 400
 
 if __name__ == '__main__':

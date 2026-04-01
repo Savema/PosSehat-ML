@@ -788,10 +788,10 @@ Balita 786,L ,7 tahun,1/18/2018,DEVYAN APRILIYANTO ,PEDURUNGAN KIDUL ,3,1,14,
 Balita 787,L ,6 tahun,6/8/2018,BOGI WICAKSONO ,PEDURUNGAN KIDUL ,6,10,11,93,0,-2.98,-2.15,-2.73,Gizi Kurang
 Balita 788,L ,6 tahun,10/20/2018,edy darmawan  ,PEDURUNGAN KIDUL ,6,1,12,90,16,-1.92,-2.35,-0.9,Gizi Baik
 Balita 789,L ,6 tahun,11/8/2018,PRIYO PRAMONO / SULASTRI ,PEDURUNGAN LOR ,4,7,12,90,16,-1.86,-2.27,-0.9,Gizi Baik
-Balita 790,L ,5 tahun,3/2/2020,agung ,PEDURUNGAN LOR ,6,7,9,80,0,-2.7,-2.46,-2.0,Gizi Kurang
+Balita 790,L ,5 tahun,3/2/2020,agung ,PEDURUNGAN LOR ,6,7,9,80,0,-2.7,-2.46,-2,Gizi Kurang
 Balita 791,L ,5 tahun,9/12/2019,AGUS IKWANTO / SURTIANINGSIH ,PEDURUNGAN LOR ,7,3,10,84,0,-2.46,-2.36,-1.67,Gizi Baik
 Balita 792,L ,5 tahun,1/24/2020,YUDIARTO ,PEDURUNGAN LOR ,1,8,12,82,0,-0.36,-2.1,1.06,Resiko Gizi Lebih
-Balita 793,L ,5 tahun,2/25/2020,FADIL ASROR ,PEDURUNGAN LOR ,1,7,9,80,0,-2.73,-2.5,-2.0,Gizi Kurang
+Balita 793,L ,5 tahun,2/25/2020,FADIL ASROR ,PEDURUNGAN LOR ,1,7,9,80,0,-2.73,-2.5,-2,Gizi Kurang
 Balita 794,L ,5 tahun,4/5/2020,JIMAN ,PEDURUNGAN LOR ,5,1,10,81,0,-1.63,-2.09,-0.75,Gizi Baik
 Balita 795,P ,3 tahun,8/22/2021,rafi ,PEDURUNGAN LOR ,2,8,6,60,0,-1.96,-3.07,0.23,Gizi Baik
 Balita 796,L ,5 tahun,8/8/2019,nur fitri ,PEDURUNGAN LOR ,1,8,9,84,0,-3.44,-2.56,-3.04,Gizi Buruk
@@ -1287,78 +1287,66 @@ Balita 1285,P ,4 tahun,11/10/2020,MUSTOFA ,PLAMONGAN SARI ,,3,10.1,84.2,0,-2.
 Balita 1286,L ,4 tahun,11/19/2020,HENDRA ,PLAMONGAN SARI ,,3,9.3,83.5,0,-3.12,-2.59,-2.47,Gizi Kurang
 Balita 1287,L ,2 tahun,10/29/2022,Muhammad Misbachul Anam ,PLAMONGAN SARI ,3,10,8.5,65,,0.14,-2.06,1.85,Resiko Gizi Lebih
 Balita 1288,L ,2 tahun,8/23/2022,LIS HIDAYATI ,PLAMONGAN SARI ,2,12,7.9,68,0,-1.21,-2.01,-0.1,Gizi Baik
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,
+Balita 1289,L ,1 tahun,1/4/2025,Mahmud,PLAMONGAN SARI ,5,10,9.6,75.7,0,0,,,Gizi Baik
+Balita 1290,L,2 tahun,,,,,,12.2,87.8,,,,,Gizi Baik
+Balita 1991,L,3 tahun,,,,,,14.3,87.8,,,,,Gizi Baik
+Balita 1992,L,3 tahun,,,,,,14.1,95.8,,,,,Gizi Baik
+Balita 1993,L,3 tahun,,,,,,14.2,95.5,,,,,Gizi Baik
+Balita 1994,P,1 tahun,,,,,,10.5,81.2,,,,,Gizi Baik
+Anisa rizqi azalia,P,2 tahun,,,,,,11.8,86.9,,,,,Gizi Baik
+Nafasya aqila aulia,P,4 tahun,,,,,,16.1,102.7,,,,,Gizi Baik
+Naura nailatul atqiya,P,4 tahun,,,,,,15.8,102,,,,,Gizi Baik
+Dhifa,P,15 bulan,,,,,,9.5,77.5,,,,,Gizi Baik
+Ghebril,P,17 bulan,,,,,,10,79.5,,,,,Gizi Baik
+Abizar,L,5 tahun ,,,,,,20,114.5,,,,,Gizi Baik
+Ihsan,L,3 tahun ,,,,,,15.2,99.2,,,,,Gizi Baik
+Delisa,L,3 tahun ,,,,,,14.8,98,,,,,Gizi Baik
+Naura ,L,3 tahun,,,,,,14,94,,,,,Gizi Baik
+Nala,P,3 tahun,,,,,,14.2,95,,,,,Gizi Baik
+Keysa,P,3 tahun ,,,,,,14.5,97.2,,,,,Gizi Baik
+Hawa Eza,P,3 tahun ,,,,,,13.9,94,,,,,Gizi Baik
+Afrin,P,2 tahun ,,,,,,13.2,91.7,,,,,Gizi Baik
+Alena,P,2 tahun ,,,,,,12.1,87.5,,,,,Gizi Baik
+Rama,P,2 tahun ,,,,,,14,94,,,,,Gizi Baik
+Yasmi,L,1 tahun ,,,,,,9.2,76.5,,,,,Gizi Baik
+Anisa,L,3 tahun ,,,,,,14.2,95.5,,,,,Gizi Baik
+Hilya,L,1 tahun ,,,,,,10.5,81.2,,,,,Gizi Baik
+Ali,L,2 tahun ,,,,,,12.6,88.7,,,,,Gizi Baik
+Yusuf,P,2 tahun ,,,,,,12.8,89.4,,,,,Gizi Baik
+Arrasya,P,2 tahun ,,,,,,12.4,87.8,,,,,Gizi Baik
+Azril,P,2 tahun ,,,,,,12.6,88.5,,,,,Gizi Baik
+Elssaka,P,2 tahun ,,,,,,12.3,87.5,,,,,Gizi Baik
+Aira,P,2 tahun ,,,,,,12.9,90.2,,,,,Gizi Baik
+Elsanum,P,1 tahun ,,,,,,11.4,85,,,,,Gizi Baik
+Afida,L,4 tahun ,,,,,,17.5,107.2,,,,,Gizi Baik
+Gazzal,L,4 tahun ,,,,,,16.8,104.5,,,,,Gizi Baik
+Ghofi,L,3 tahun ,,,,,,15.8,101.2,,,,,Gizi Baik
+Hilya,L,3 tahun,,,,,,16.1,102,,,,,Gizi Baik
+Zahra,P,3 tahun ,,,,,,15.5,100.8,,,,,Gizi Baik
+Gibran,P,3 tahun,,,,,,15.2,99.5,,,,,Gizi Baik
+Keysa,P,3 tahun ,,,,,,14.8,98.4,,,,,Gizi Baik
+Nesya,P,3 tahun ,,,,,,14.5,97.2,,,,,Gizi Baik
+Nadzifa,P,2 tahun ,,,,,,13.8,93.5,,,,,Gizi Baik
+Daffa,P,2 tahun ,,,,,,13.9,94.2,,,,,Gizi Baik
+Fattan,L,2 tahun ,,,,,,14.1,94.5,,,,,Gizi Baik
+Shanum,L,2 tahun ,,,,,,13.4,92,,,,,Gizi Baik
+Nara,L,2 tahun ,,,,,,12.7,89.4,,,,,Gizi Baik
+Danis,L,2 tahun ,,,,,,12.9,89.6,,,,,Gizi Baik
+Anasera,P,2 tahun ,,,,,,12.6,89,,,,,Gizi Baik
+Aurora,P,2 tahun ,,,,,,12.3,88.2,,,,,Gizi Baik
+Selfania,P,2 tahun ,,,,,,12.1,87,,,,,Gizi Baik
+Kayra,P,2 tahun ,,,,,,11.9,86.2,,,,,Gizi Baik
+Najwa,P,2 tahun ,,,,,,13,90.5,,,,,Gizi Baik
+Arsa,P,2 tahun ,,,,,,13.9,93.8,,,,,Gizi Baik
+Inara,L,3 tahun ,,,,,,14.1,94.8,,,,,Gizi Baik
+Cakra,L,3 tahun ,,,,,,15,98.8,,,,,Gizi Baik
+Misel ,L,4 tahun ,,,,,,17.8,108,,,,,Gizi Baik
+Rere,L,3 tahun ,,,,,,15.9,101.5,,,,,Gizi Baik
+Aqila,P,2 tahun ,,,,,,13.5,92.2,,,,,Gizi Baik
+Arfan,P,3 tahun,,,,,,14.5,96,,,,,Gizi Baik
+Rayan,P,2 tahun,,,,,,12.8,89.2,,,,,Gizi Baik
+Il,P,3 tahun ,,,,,,14.3,95.2,,,,,Gizi Baik
+Makkah,P,4 tahun ,,,,,,18.2,109.5,,,,,Gizi Baik
+Zamzam,P,2 tahun,,,,,,10.1,78.5,,,,,Gizi Baik
+Ibrahim,L,3 tahun ,,,,,,14.9,98,,,,,Gizi Baik
+Emil,L,3 tahun ,,,,,,14.3,95.8,,,,,Gizi Baik
