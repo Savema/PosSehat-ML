@@ -40,37 +40,34 @@ def hitung_zscore_who(tinggi, usia, jk):
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        data = request.json
+        data = request.get_json() # Lebih aman pakai get_json()
+        print(f"DEBUG: Data yang masuk dari Laravel: {data}") # Cek di terminal
+
         jk = int(data['JK'])
         usia = float(data['Usia'])
         berat = float(data['Berat'])
         tinggi = float(data['Tinggi'])
-        # LiLA tidak perlu diambil kalau sudah dihapus di notebook
 
-        # 1. Hitung Z-Score (Karena ini jadi "makanan" buat si AI)
+        # 1. Hitung Z-Score
         zscore_val = hitung_zscore_who(tinggi, usia, jk)
+        print(f"DEBUG: Z-Score terhitung: {zscore_val}")
 
-        # 2. BUAT X_INPUT UNTUK AI
-        # Urutan HARUS SAMA dengan fitur di Notebook: JK, Usia, Berat, Tinggi, Zscore
+        # 2. X_INPUT
         X_input = pd.DataFrame([[
-            jk, 
-            usia, 
-            berat, 
-            tinggi, 
-            zscore_val
+            jk, usia, berat, tinggi, zscore_val
         ]], columns=['JK', 'Usia', 'Berat', 'Tinggi', 'Zscore_TB_U'])
 
-        # 3. PANGGIL AI UNTUK PREDIKSI
+        # 3. PREDIKSI
         y_pred = model.predict(X_input)
         hasil_ml = int(y_pred[0])
 
-        # 4. HASIL AKHIR (Sekarang 100% dari AI)
         return jsonify({
-            'Status_Stunting': hasil_ml, # Ini hasil tebakan AI
+            'Status_Stunting': hasil_ml,
             'Zscore': float(zscore_val)
         })
 
     except Exception as e:
+        print(f"❌ ERROR TERJADI: {str(e)}") # INI PENTING! Biar muncul di terminal
         return jsonify({'status': 'error', 'message': str(e)}), 400
 
 if __name__ == '__main__':
