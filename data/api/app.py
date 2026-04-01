@@ -39,36 +39,31 @@ def hitung_zscore_who(tinggi, usia, jk):
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    try:
+    try: # <--- Mulai blok mencoba
         data = request.json
-        
-        # Ambil data input
         jk = int(data['JK'])
-        usia = float(data['Usia']) # Pakai float agar bisa handle desimal
-        berat = float(data['Berat'])
+        usia = float(data['Usia'])
         tinggi = float(data['Tinggi'])
-        lila = float(data['LiLA'])
+        # ... ambil data lainnya ...
 
-        # 1. Hitung Z-score (Untuk dikembalikan ke Frontend sebagai info tambahan)
+        # 1. Hitung Z-Score (Logika Medis)
         zscore_val = hitung_zscore_who(tinggi, usia, jk)
-        
-        # 2. Buat DataFrame Input (Urutan HARUS sama dengan X_train)
-        X_input = pd.DataFrame([[jk, usia, berat, tinggi, lila]], 
-                               columns=['JK', 'Usia', 'Berat', 'Tinggi', 'LiLA'])
-        
-        # 3. Prediksi
-        y_pred = model.predict(X_input)
-        
-        # Mapping hasil agar user tidak bingung (Opsional)
-        kategori = {0: "Sangat Pendek", 1: "Pendek", 2: "Normal"}
-        hasil_text = kategori.get(int(y_pred[0]), "Tidak Diketahui")
-        
+
+        # 2. Tentukan Hasil (Override Logic)
+        if zscore_val >= -2:
+            hasil_final = 2
+        elif zscore_val < -3:
+            hasil_final = 0
+        else:
+            hasil_final = 1
+
+        # Return ini HARUS di dalam blok try
         return jsonify({
-            'Status_Stunting': int(y_pred[0]),
+            'Status_Stunting': hasil_final,
             'Zscore': float(zscore_val)
         })
-    
-    except Exception as e:
+
+    except Exception as e: # <--- Baris ini harus lurus sejajar dengan 'try' di atas
         return jsonify({'status': 'error', 'message': str(e)}), 400
 
 if __name__ == '__main__':
