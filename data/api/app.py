@@ -1,75 +1,215 @@
+"""
+==============================================================
+FLASK API - Deteksi Stunting Pada Balita
+==============================================================
+Endpoint  : POST /predict
+Input     : JK, Usia_Bulan, Berat, Tinggi
+Output    : Status_Stunting, Probabilitas
+Port      : 5000
+==============================================================
+"""
+
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pandas as pd
-import joblib
-import os
 import numpy as np
+import pickle
+import os
 
 app = Flask(__name__)
+CORS(app)  # izinkan request dari Laravel
 
-# --- SETUP PATH ---
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Pastikan nama file model sesuai dengan yang kamu simpan (model_rf_stunting.pkl)
-model_path = os.path.join(BASE_DIR, '..', '..', 'models', 'model_rf_stunting.pkl')
-ref_path_boys = os.path.join(BASE_DIR, '..', 'references', 'tab_lhfa_boys_p_0_5.csv')
-ref_path_girls = os.path.join(BASE_DIR, '..', 'references', 'tab_lhfa_girls_p_0_5.csv')
+# ──────────────────────────────────────────────
+# PATH FILE
+# ──────────────────────────────────────────────
+BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
+MODEL_DIR  = os.path.join(BASE_DIR, '..', '..', 'models')
+REF_DIR    = os.path.join(BASE_DIR, '..', 'references')
 
-# --- LOAD MODEL & DATA REFERENSI ---
-try:
-    model = joblib.load(model_path)
-    df_ref_boys = pd.read_csv(ref_path_boys)
-    df_ref_girls = pd.read_csv(ref_path_girls)
-    print("✅ Model dan Referensi WHO berhasil dimuat!")
-except Exception as e:
-    print(f"❌ Error saat memuat file: {e}")
+MODEL_PATH   = os.path.join(MODEL_DIR, 'model_stunting.pkl')
+ENCODER_PATH = os.path.join(MODEL_DIR, 'label_encoder_stunting.pkl')
+BOYS_PATH    = os.path.join(REF_DIR, 'tab_lhfa_boys_p_0_5.csv')
+GIRLS_PATH   = os.path.join(REF_DIR, 'tab_lhfa_girls_p_0_5.csv')
 
-def hitung_zscore_who(tinggi, usia, jk):
-    df_ref = df_ref_boys if int(jk) == 1 else df_ref_girls
-    
-    # Ambil baris dengan bulan terdekat (agar lebih stabil)
-    usia_int = int(round(usia))
-    ref_row = df_ref.iloc[(df_ref['Month'] - usia_int).abs().argsort()[:1]].iloc[0]
-    
-    L = ref_row['L']
-    M = ref_row['M']
-    S = ref_row['S']
-    
-    # Rumus LMS WHO (Sama dengan saat training)
-    z_score = ((tinggi / M) ** L - 1) / (L * S)
-    return z_score
+# ──────────────────────────────────────────────
+# LOAD MODEL & REFERENSI WHO SAAT STARTUP
+# ──────────────────────────────────────────────
+print("Loading model...")
+with open(MODEL_PATH, 'rb') as f:
+    model = pickle.load(f)
 
+with open(ENCODER_PATH, 'rb') as f:
+    le = pickle.load(f)
+
+# Load tabel WHO TB/U
+who_boys  = pd.read_csv(BOYS_PATH)
+who_girls = pd.read_csv(GIRLS_PATH)
+
+print("✅ Model dan tabel WHO berhasil dimuat!")
+
+
+# ──────────────────────────────────────────────
+# FUNGSI HITUNG ZS TB/U (untuk referensi saja)
+# tidak dipakai sebagai fitur model
+# ──────────────────────────────────────────────
+def hitung_zs_tbu(jk, usia_bulan, tinggi):
+    """
+    Hitung Z-Score TB/U menggunakan tabel WHO.
+    Digunakan sebagai referensi validasi, bukan fitur model.
+    """
+    try:
+        tabel = who_boys if jk == 1 else who_girls
+        row   = tabel[tabel['Month'] == usia_bulan]
+        if row.empty:
+            return None
+        M  = row['M'].values[0]
+        SD = row['SD'].values[0]
+        return round((tinggi - M) / SD, 2)
+    except:
+        return None
+
+
+# ──────────────────────────────────────────────
+# FUNGSI VALIDASI INPUT
+# ──────────────────────────────────────────────
+def validasi_input(data):
+    errors = []
+
+    # Cek field wajib
+    required = ['JK', 'Usia_Bulan', 'Berat', 'Tinggi']
+    for field in required:
+        if field not in data:
+            errors.append(f"Field '{field}' wajib diisi.")
+
+    if errors:
+        return errors
+
+    # Validasi JK
+    if data['JK'] not in [0, 1]:
+        errors.append("JK harus 0 (Perempuan) atau 1 (Laki-laki).")
+
+    # Validasi Usia
+    usia = data['Usia_Bulan']
+    if not (0 <= usia <= 60):
+        errors.append("Usia_Bulan harus antara 0-60 bulan.")
+
+    # Validasi Berat
+    berat = data['Berat']
+    if not (1 <= berat <= 30):
+        errors.append("Berat harus antara 1-30 kg.")
+
+    # Validasi Tinggi
+    tinggi = data['Tinggi']
+    if not (40 <= tinggi <= 120):
+        errors.append("Tinggi harus antara 40-120 cm.")
+
+    return errors
+
+
+# ──────────────────────────────────────────────
+# ENDPOINT: CEK STATUS API
+# ──────────────────────────────────────────────
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({
+        'status' : 'ok',
+        'message': 'Flask API Deteksi Stunting aktif',
+        'version': '1.0.0',
+        'endpoints': {
+            'POST /predict': 'Prediksi status stunting balita'
+        }
+    })
+
+
+# ──────────────────────────────────────────────
+# ENDPOINT: PREDIKSI STUNTING
+# ──────────────────────────────────────────────
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        data = request.get_json() # Lebih aman pakai get_json()
-        print(f"DEBUG: Data yang masuk dari Laravel: {data}") # Cek di terminal
+        # Ambil data dari request Laravel
+        data = request.get_json()
 
-        jk = int(data['JK'])
-        usia = float(data['Usia'])
-        berat = float(data['Berat'])
-        tinggi = float(data['Tinggi'])
+        if not data:
+            return jsonify({
+                'success': False,
+                'message': 'Request body tidak boleh kosong.'
+            }), 400
 
-        # 1. Hitung Z-Score
-        zscore_val = hitung_zscore_who(tinggi, usia, jk)
-        print(f"DEBUG: Z-Score terhitung: {zscore_val}")
+        # Validasi input
+        errors = validasi_input(data)
+        if errors:
+            return jsonify({
+                'success': False,
+                'message': 'Input tidak valid.',
+                'errors' : errors
+            }), 422
 
-        # 2. X_INPUT
-        X_input = pd.DataFrame([[
-            jk, usia, berat, tinggi, zscore_val
-        ]], columns=['JK', 'Usia', 'Berat', 'Tinggi', 'Zscore_TB_U'])
+        # Ambil nilai input
+        jk          = int(data['JK'])
+        usia_bulan  = int(data['Usia_Bulan'])
+        berat       = float(data['Berat'])
+        tinggi      = float(data['Tinggi'])
 
-        # 3. PREDIKSI
-        y_pred = model.predict(X_input)
-        hasil_ml = int(y_pred[0])
+        # Hitung fitur turunan
+        bmi         = round(berat / ((tinggi / 100) ** 2), 4)
+        rasio_bb_tb = round(berat / tinggi, 4)
+
+        # Susun input untuk model
+        input_model = pd.DataFrame([{
+            'JK'         : jk,
+            'Usia_Bulan' : usia_bulan,
+            'Berat'      : berat,
+            'Tinggi'     : tinggi,
+            'BMI'        : bmi,
+            'Rasio_BB_TB': rasio_bb_tb
+        }])
+
+        # Prediksi
+        hasil_encoded = model.predict(input_model)[0]
+        hasil_label   = le.inverse_transform([hasil_encoded])[0]
+        probabilitas  = model.predict_proba(input_model)[0]
+
+        # Hitung ZS TB/U sebagai referensi
+        zs_tbu = hitung_zs_tbu(jk, usia_bulan, tinggi)
+
+        # Susun probabilitas per kelas
+        prob_dict = {
+            kelas: round(float(prob) * 100, 2)
+            for kelas, prob in zip(le.classes_, probabilitas)
+        }
 
         return jsonify({
-            'Status_Stunting': hasil_ml,
-            'Zscore': float(zscore_val)
-        })
+            'success': True,
+            'data': {
+                'input': {
+                    'JK'        : 'Laki-laki' if jk == 1 else 'Perempuan',
+                    'Usia_Bulan': usia_bulan,
+                    'Berat'     : berat,
+                    'Tinggi'    : tinggi,
+                },
+                'hasil': {
+                    'Status_Stunting': hasil_label,
+                    'ZS_TBU'         : zs_tbu,
+                    'Probabilitas'   : prob_dict,
+                    'Confidence'     : round(float(max(probabilitas)) * 100, 2)
+                }
+            }
+        }), 200
 
     except Exception as e:
-        print(f"❌ ERROR TERJADI: {str(e)}") # INI PENTING! Biar muncul di terminal
-        return jsonify({'status': 'error', 'message': str(e)}), 400
+        return jsonify({
+            'success': False,
+            'message': f'Terjadi kesalahan pada server: {str(e)}'
+        }), 500
 
+
+# ──────────────────────────────────────────────
+# RUN SERVER
+# ──────────────────────────────────────────────
 if __name__ == '__main__':
-    # Pakai host 0.0.0.0 agar bisa diakses dari HP atau device lain di jaringan yang sama
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(
+        host='0.0.0.0',
+        port=5000,
+        debug=True   # ganti False saat production/hosting
+    )
