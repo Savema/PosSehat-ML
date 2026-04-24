@@ -28,6 +28,8 @@ REF_DIR    = os.path.join(BASE_DIR, '..', 'references')
 
 MODEL_PATH   = os.path.join(MODEL_DIR, 'model_stunting.pkl')
 ENCODER_PATH = os.path.join(MODEL_DIR, 'label_encoder_stunting.pkl')
+print(f"Model path: {MODEL_PATH}")
+print(f"Encoder path: {ENCODER_PATH}")
 BOYS_PATH    = os.path.join(REF_DIR, 'tab_lhfa_boys_p_0_5.csv')
 GIRLS_PATH   = os.path.join(REF_DIR, 'tab_lhfa_girls_p_0_5.csv')
 
@@ -213,3 +215,13 @@ if __name__ == '__main__':
         port=5000,
         debug=True   # ganti False saat production/hosting
     )
+
+    # Tambahkan sementara untuk debug
+import pandas as pd
+test = pd.DataFrame([{
+    'JK': 1, 'Usia_Bulan': 21, 'Berat': 8.5, 'Tinggi': 75.0,
+    'BMI': 8.5/((75/100)**2), 'Rasio_BB_TB': 8.5/75
+}])
+hasil = model.predict(test)[0]
+label = le.inverse_transform([hasil])[0]
+print(f"🔍 TEST PREDIKSI: BB=8.5 TB=75 Usia=21 JK=L → {label}")
