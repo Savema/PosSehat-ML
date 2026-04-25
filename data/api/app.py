@@ -167,13 +167,20 @@ def predict():
             'Rasio_BB_TB': rasio_bb_tb
         }])
 
-        # Prediksi
+        # Prediksi model
         hasil_encoded = model.predict(input_model)[0]
         hasil_label   = le.inverse_transform([hasil_encoded])[0]
         probabilitas  = model.predict_proba(input_model)[0]
 
-        # Hitung ZS TB/U sebagai referensi
+        # Hitung ZS TB/U dari tabel WHO
         zs_tbu = hitung_zs_tbu(jk, usia_bulan, tinggi)
+
+        # Override dengan rule WHO jika model salah pada kasus ekstrem
+        if zs_tbu is not None and zs_tbu < -3:
+            hasil_label = 'Sangat Pendek'
+        elif zs_tbu is not None and -3 <= zs_tbu < -2:
+            if hasil_label == 'Normal':
+                hasil_label = 'Pendek'
 
         # Susun probabilitas per kelas
         prob_dict = {
@@ -215,13 +222,3 @@ if __name__ == '__main__':
         port=5000,
         debug=True   # ganti False saat production/hosting
     )
-
-    # Tambahkan sementara untuk debug
-import pandas as pd
-test = pd.DataFrame([{
-    'JK': 1, 'Usia_Bulan': 21, 'Berat': 8.5, 'Tinggi': 75.0,
-    'BMI': 8.5/((75/100)**2), 'Rasio_BB_TB': 8.5/75
-}])
-hasil = model.predict(test)[0]
-label = le.inverse_transform([hasil])[0]
-print(f"🔍 TEST PREDIKSI: BB=8.5 TB=75 Usia=21 JK=L → {label}")
