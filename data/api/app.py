@@ -6,6 +6,11 @@ Endpoint  : POST /predict
 Input     : JK, Usia_Bulan, Berat, Tinggi
 Output    : Status_Stunting, Probabilitas
 Port      : 5000
+
+Perubahan dari v1:
+  - Hapus fitur Rasio_BB_TB
+  - Tambah threshold 0.4 untuk prediksi stunting
+  - Ganti model ke model_stunting_v2.pkl
 ==============================================================
 """
 
@@ -26,8 +31,8 @@ BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR  = os.path.join(BASE_DIR, '..', '..', 'models')
 REF_DIR    = os.path.join(BASE_DIR, '..', 'references')
 
-MODEL_PATH   = os.path.join(MODEL_DIR, 'model_stunting.pkl')
-ENCODER_PATH = os.path.join(MODEL_DIR, 'label_encoder_stunting.pkl')
+MODEL_PATH   = os.path.join(MODEL_DIR, 'model_stunting_v2.pkl')
+ENCODER_PATH = os.path.join(MODEL_DIR, 'label_encoder_stunting_v2.pkl')
 print(f"Model path: {MODEL_PATH}")
 print(f"Encoder path: {ENCODER_PATH}")
 BOYS_PATH    = os.path.join(REF_DIR, 'tab_lhfa_boys_p_0_5.csv')
@@ -47,7 +52,11 @@ with open(ENCODER_PATH, 'rb') as f:
 who_boys  = pd.read_csv(BOYS_PATH)
 who_girls = pd.read_csv(GIRLS_PATH)
 
+# Threshold untuk prediksi stunting
+THRESHOLD = 0.4
+
 print("✅ Model dan tabel WHO berhasil dimuat!")
+print(f"✅ Threshold prediksi : {THRESHOLD}")
 
 
 # ──────────────────────────────────────────────
@@ -116,7 +125,7 @@ def index():
     return jsonify({
         'status' : 'ok',
         'message': 'Flask API Deteksi Stunting aktif',
-        'version': '1.0.0',
+        'version': '2.0.0',
         'endpoints': {
             'POST /predict': 'Prediksi status stunting balita'
         }
@@ -148,29 +157,39 @@ def predict():
             }), 422
 
         # Ambil nilai input
-        jk          = int(data['JK'])
-        usia_bulan  = int(data['Usia_Bulan'])
-        berat       = float(data['Berat'])
-        tinggi      = float(data['Tinggi'])
+        jk         = int(data['JK'])
+        usia_bulan = int(data['Usia_Bulan'])
+        berat      = float(data['Berat'])
+        tinggi     = float(data['Tinggi'])
 
         # Hitung fitur turunan
-        bmi         = round(berat / ((tinggi / 100) ** 2), 4)
-        rasio_bb_tb = round(berat / tinggi, 4)
+        # [v2] Rasio_BB_TB dihapus
+        bmi = round(berat / ((tinggi / 100) ** 2), 4)
 
         # Susun input untuk model
+        # [v2] Tanpa Rasio_BB_TB
         input_model = pd.DataFrame([{
-            'JK'         : jk,
-            'Usia_Bulan' : usia_bulan,
-            'Berat'      : berat,
-            'Tinggi'     : tinggi,
-            'BMI'        : bmi,
-            'Rasio_BB_TB': rasio_bb_tb
+            'JK'        : jk,
+            'Usia_Bulan': usia_bulan,
+            'Berat'     : berat,
+            'Tinggi'    : tinggi,
+            'BMI'       : bmi,
         }])
 
-        # Prediksi model
-        hasil_encoded = model.predict(input_model)[0]
-        hasil_label   = le.inverse_transform([hasil_encoded])[0]
-        probabilitas  = model.predict_proba(input_model)[0]
+        # Prediksi probabilitas
+        probabilitas = model.predict_proba(input_model)[0]
+
+        # [v2] Prediksi dengan threshold 0.4
+        idx_normal = list(le.classes_).index('Normal')
+        idx_pendek = list(le.classes_).index('Pendek')
+        idx_sangat = list(le.classes_).index('Sangat Pendek')
+
+        if probabilitas[idx_sangat] >= THRESHOLD:
+            hasil_label = 'Sangat Pendek'
+        elif probabilitas[idx_pendek] >= THRESHOLD:
+            hasil_label = 'Pendek'
+        else:
+            hasil_label = 'Normal'
 
         # Hitung ZS TB/U dari tabel WHO
         zs_tbu = hitung_zs_tbu(jk, usia_bulan, tinggi)
