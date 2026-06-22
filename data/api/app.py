@@ -49,8 +49,18 @@ with open(ENCODER_PATH, 'rb') as f:
     le = pickle.load(f)
 
 # Load tabel WHO TB/U
-who_boys  = pd.read_csv(BOYS_PATH)
-who_girls = pd.read_csv(GIRLS_PATH)
+who_boys = pd.read_csv(
+    BOYS_PATH,
+    sep=';',
+    decimal=','
+)
+
+who_girls = pd.read_csv(
+    GIRLS_PATH,
+    sep=';',
+    decimal=','
+)
+print(who_girls.dtypes)
 
 # Threshold untuk prediksi stunting
 THRESHOLD = 0.4
